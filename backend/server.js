@@ -3,13 +3,13 @@ const dotenv = require("dotenv");
 const Connectdatabase = require("./config/db");
 // Adding path to .env file
 dotenv.config({ path: "backend/config/.env" });
- 
+
 //uncaughtException error
 process.on("uncaughtException", (err) => {
-    comsole.log(`Error : ${error.message}`);
-    console.log(`Server is shutting down due to uncaughtException`);
-    process.exit(1);
-  });
+  console.log(`Error : ${err.message}`);
+  console.log(`Server is shutting down due to uncaughtException`);
+  process.exit(1);
+});
 
 // Connection
 Connectdatabase();
