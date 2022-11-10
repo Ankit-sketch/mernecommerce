@@ -5,6 +5,7 @@ import ProductCard from "../ProductCard/ProductCard.js";
 import { useDispatch, useSelector } from "react-redux";
 import Metadata from "../layout/metadata";
 import { getProducts } from "../../actions/productAction";
+import { useAlert } from "react-alert";
 import Loader from "../layout/Loader/Loader";
 // const product = {
 //   _id: 1,
@@ -17,30 +18,47 @@ import Loader from "../layout/Loader/Loader";
 // console.log()
 const Home = () => {
   const dispatch = useDispatch();
+  const alert = useAlert();
+
   useSelector((state) => console.log("state", state));
-  console.log("gtgtgt", useSelector((state) => state.productReducer))
-  const { loading, products, productcount } = useSelector((state) => state.productReducer);
+  console.log(
+    "gtgtgt",
+    useSelector((state) => state.productReducer)
+  );
+  const { loading, products, productcount, error } = useSelector(
+    (state) => state.productReducer
+  );
   useEffect(() => {
+    if (error) {
+      alert.error(error);
+    }
     dispatch(getProducts());
-  }, [dispatch]);
+  }, [dispatch, error]);
   return (
     <>
-      {loading ? (<Loader />) : (<><Metadata title="ECOMMERCE" />
-        <div className="banner">
-          <p>Welcome to Ecommerce</p>
-          <h1>FIND AMAZING PRODUCTS BELOW</h1>
-          <a href="#container">
-            <button>
-              Scroll <CgMouse />
-            </button>
-          </a>
-        </div>
-        <h2 className="homeHeading">Featured Products</h2>
-        <div className="container" id="container">
-          {products && products.map((product) => <ProductCard key={product._id} product={product} />)}
-        </div>
-      </>)
-      }
+      {loading ? (
+        <Loader />
+      ) : (
+        <>
+          <Metadata title="ECOMMERCE" />
+          <div className="banner">
+            <p>Welcome to Ecommerce</p>
+            <h1>FIND AMAZING PRODUCTS BELOW</h1>
+            <a href="#container">
+              <button>
+                Scroll <CgMouse />
+              </button>
+            </a>
+          </div>
+          <h2 className="homeHeading">Featured Products</h2>
+          <div className="container" id="container">
+            {products &&
+              products.map((product) => (
+                <ProductCard key={product._id} product={product} />
+              ))}
+          </div>
+        </>
+      )}
     </>
   );
 };

@@ -3,7 +3,7 @@ const dotenv = require("dotenv");
 const Connectdatabase = require("./config/db");
 // Adding path to .env file
 dotenv.config({ path: "backend/config/.env" });
-
+const cloudinary = require("cloudinary");
 //uncaughtException error
 process.on("uncaughtException", (err) => {
   console.log(`Error : ${err.message}`);
@@ -13,6 +13,11 @@ process.on("uncaughtException", (err) => {
 
 // Connection
 Connectdatabase();
+cloudinary.config({
+  cloud_name: process.env.CLOUD_NAME,
+  api_key: process.env.CLOUDINARY_API_KEY,
+  api_secret: process.env.CLOUDINARY_API_SECRET,
+});
 
 const PORT = process.env.PORT || 8000;
 

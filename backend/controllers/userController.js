@@ -4,16 +4,23 @@ const asyncErrorHandler = require("../middlewares/asyncErrorHandler");
 const sendToken = require("../utils/jwtToken");
 const sendEmail = require("../utils/sendEmail");
 const crypto = require("crypto");
+var cloudinary = require("cloudinary").v2;
 
 exports.createUser = asyncErrorHandler(async (req, res, next) => {
+  const myCloud = await cloudinary.uploader.upload(req.body.avatar, {
+    folder: "avatars",
+    width: 150,
+    crop: "scale",
+  });
+  console.log(myCloud);
   const { name, email, password } = req.body;
   const user = await User.create({
     name,
     email,
     password,
     avatar: {
-      public_id: "this is sample avatar",
-      url: "this is sample url",
+      public_id: myCloud.public_id,
+      url: myCloud.secure_url,
     },
   });
   //JWT Token
@@ -161,33 +168,33 @@ exports.updateProfile = asyncErrorHandler(async (req, res, next) => {
 exports.getAllUsers = asyncErrorHandler(async (req, res, next) => {
   const users = await User.find();
   res.status(200).json({
-    success: true,  
-    users
+    success: true,
+    users,
   });
 });
 
 //get single USERS(admin)
 exports.getSingleUser = asyncErrorHandler(async (req, res, next) => {
   const user = await User.findById(req.params.id);
-  if(!user){
+  if (!user) {
     return next(customErrorhandler.usernotfound("User does not exist"));
   }
   res.status(200).json({
-    success: true,  
-    user
+    success: true,
+    user,
   });
 });
 
 //update USER role ---admin
 exports.updateRole = asyncErrorHandler(async (req, res, next) => {
   const isuserexist = await User.findById(req.params.id);
-  if(!isuserexist){
+  if (!isuserexist) {
     return next(customErrorhandler.usernotfound("User does not exist"));
   }
   const newUserdata = {
     name: req.body.name,
     email: req.body.email,
-    role : req.body.role,
+    role: req.body.role,
   };
   const user = await User.findByIdAndUpdate(req.params.id, newUserdata, {
     new: true,
@@ -199,16 +206,15 @@ exports.updateRole = asyncErrorHandler(async (req, res, next) => {
   });
 });
 
-//delete USER profile  ----admin 
+//delete USER profile  ----admin
 exports.deleteUser = asyncErrorHandler(async (req, res, next) => {
   const user = await User.findById(req.params.id);
-  if(!user){
+  if (!user) {
     return next(customErrorhandler.usernotfound("User does not exist"));
   }
   await user.remove();
   res.status(200).json({
     success: true,
-    message : "User deleted successfully"
+    message: "User deleted successfully",
   });
 });
-
