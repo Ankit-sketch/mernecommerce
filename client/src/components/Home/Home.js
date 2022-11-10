@@ -14,15 +14,14 @@ import Loader from "../layout/Loader/Loader";
 //     { url: "https://m.media-amazon.com/images/I/61effnJNSsS._UL1500_.jpg" },
 //   ],
 // };
+// console.log()
 const Home = () => {
   const dispatch = useDispatch();
   useSelector((state) => console.log("state", state));
   console.log("gtgtgt", useSelector((state) => state.productReducer))
   const { loading, products, productcount } = useSelector((state) => state.productReducer);
   useEffect(() => {
-    console.log("called")
     dispatch(getProducts());
-    console.log("called2")
   }, [dispatch]);
   return (
     <>
@@ -38,8 +37,7 @@ const Home = () => {
         </div>
         <h2 className="homeHeading">Featured Products</h2>
         <div className="container" id="container">
-          {/* {products?.length != 0 ? <ProductCard product={products} /> : null} */}
-          {products && products.map((product) => <ProductCard key={product.id} product={product} />)}
+          {products && products.map((product) => <ProductCard key={product._id} product={product} />)}
         </div>
       </>)
       }
