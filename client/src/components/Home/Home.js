@@ -19,12 +19,6 @@ import Loader from "../layout/Loader/Loader";
 const Home = () => {
   const dispatch = useDispatch();
   const alert = useAlert();
-
-  useSelector((state) => console.log("state", state));
-  console.log(
-    "gtgtgt",
-    useSelector((state) => state.productReducer)
-  );
   const { loading, products, productcount, error } = useSelector(
     (state) => state.productReducer
   );

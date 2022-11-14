@@ -2,8 +2,13 @@ const Product = require("../models/productModel");
 const customErrorhandler = require("../utils/customErrorhandler");
 const asyncErrorHandler = require("../middlewares/asyncErrorHandler");
 const ApiFeatures = require("../utils/apiFeature");
+var cloudinary = require("cloudinary").v2;
+
 //create a product
 exports.createProduct = asyncErrorHandler(async (req, res, next) => {
+  const myCloud = await cloudinary.uploader.upload(req.body.avatar, {
+    folder: "productimages",
+  });
   req.body.user = req.user._id;
   const product = await Product.create(req.body);
   res.status(200).json({ success: true, product });
@@ -100,44 +105,48 @@ exports.getProductReviews = asyncErrorHandler(async (req, res, next) => {
   }
   res.status(200).json({
     success: true,
-    reviews : product.reviews,
+    reviews: product.reviews,
   });
 });
 
-//Delete reviews 
+//Delete reviews
 exports.deleteProductReview = asyncErrorHandler(async (req, res, next) => {
   const product = await Product.findById(req.query.productId);
   if (!product) {
     return next(customErrorhandler.notFound("Product not found1"));
     // return next(error);
   }
-  const reviews = product.reviews.filter(rev => rev._id.toString() !== req.query.reviewId.toString());
+  const reviews = product.reviews.filter(
+    (rev) => rev._id.toString() !== req.query.reviewId.toString()
+  );
 
   let avg = 0;
   reviews.forEach((rev) => {
     avg += rev.rating;
   });
-  let ratings
-  if(avg == 0){
-    ratings = 0
-  }
-  else{
+  let ratings;
+  if (avg == 0) {
+    ratings = 0;
+  } else {
     const ratings = avg / reviews.length;
   }
 
-const numOfReviews = reviews.length;
-await Product.findByIdAndUpdate(req.query.productId, {
-  reviews,
-  ratings,  
-  numOfReviews
-},
-{
-  new : true,
-  runValidators : true,
-  useFindAndModify : false,
-})
+  const numOfReviews = reviews.length;
+  await Product.findByIdAndUpdate(
+    req.query.productId,
+    {
+      reviews,
+      ratings,
+      numOfReviews,
+    },
+    {
+      new: true,
+      runValidators: true,
+      useFindAndModify: false,
+    }
+  );
   res.status(200).json({
     success: true,
-    reviews : product.reviews,
+    reviews: product.reviews,
   });
 });

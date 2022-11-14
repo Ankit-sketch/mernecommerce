@@ -12,17 +12,20 @@ class ApiFeatures {
           },
         }
       : {};
-    console.log("keyword", keyword);
+    // console.log("keyword", keyword);
     this.query = this.query.find({ ...keyword });
     return this;
   }
   filter() {
-    const querycopy = {...this.queryString};
+    const querycopy = { ...this.queryString };
     const removavleFields = ["keyword", "limit", "page"];
     removavleFields.forEach((key) => delete querycopy[key]);
     //FILTER FOR PRICE AND RATING
     let queryString = JSON.stringify(querycopy);
-    queryString = queryString.replace(/\b(gt|gte|lt|lte)\b/g, (key) => `$${key}`);
+    queryString = queryString.replace(
+      /\b(gt|gte|lt|lte)\b/g,
+      (key) => `$${key}`
+    );
     this.query = this.query.find(JSON.parse(queryString));
     return this;
   }

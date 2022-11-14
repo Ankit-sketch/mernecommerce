@@ -1,6 +1,6 @@
 import React from "react";
 import { Link } from "react-router-dom";
-// import { Rating } from "@material-ui/lab";
+import { Rating } from "@mui/material";
 const ProductCard = ({ product }) => {
   // console.log("product", product);
   const options = {
@@ -10,10 +10,10 @@ const ProductCard = ({ product }) => {
   };
   return (
     <Link className="productCard" to={`/product/${product._id}`}>
-      <img src='/logo192.png' alt={product.name} />
+      <img src="/logo192.png" alt={product.name} />
       <p>{product.name}</p>
       <div>
-        {/* <Rating {...options} /> */}
+        <Rating {...options} />
         <span className="productCardSpan">
           ({product.numOfReviews} Reviews)
         </span>
